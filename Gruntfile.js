@@ -1,6 +1,6 @@
 /*
  * grunt-bootlint
- * https://github.com/zacechola/grunt-bootlint
+ * https://github.com/twbs/grunt-bootlint
  *
  * Copyright (c) 2014 Zac Echola
  * Licensed under the MIT license.
@@ -25,102 +25,99 @@ module.exports = function(grunt) {
 
     // Before generating any new files, remove any previously-created files.
     clean: {
-      tests: ['tmp']
+      tests: 'tmp'
     },
 
     // Configuration to be run (and then tested).
     bootlint: {
-      default_options: {
-        options: {
-        },
+      defaultOptions: {
         files: {
-          'tmp/default_options': [
-            'test/fixtures/**.html',
-          ]
+          'tmp/defaultOptions': 'test/fixtures/**.html'
         }
       },
       relaxerror: {
         options: {
-          relaxerror: ['E001'],
+          relaxerror: {
+            'E001': [],
+            'W005': 'test/fixtures/missing-jquery.html'
+          }
         },
         files: {
           'tmp/relaxerror': [
             'test/fixtures/missing-doctype.html',
             'test/fixtures/missing-charset.html',
+            'test/fixtures/missing-jquery.html'
           ]
         }
       },
-     stoponerror: {
+      stoponerror: {
         options: {
-          stoponerror: true,
+          stoponerror: true
         },
         files: {
           'tmp/stoponerror': [
             'test/fixtures/missing-doctype.html',
             'test/fixtures/missing-charset.html',
-            'test/fixtures/cols-redundant.html',
+            'test/fixtures/cols-redundant.html'
           ]
         }
       },
       stoponwarning: {
         options: {
-          stoponwarning: true,
+          stoponwarning: true
         },
         files: {
           'tmp/stoponwarning': [
             'test/fixtures/missing-doctype.html',
             'test/fixtures/missing-charset.html',
-            'test/fixtures/cols-redundant.html',
+            'test/fixtures/cols-redundant.html'
           ]
         }
       },
       showallerrors: {
         options: {
-          showallerrors: true,
+          showallerrors: true
         },
         files: {
           'tmp/stoponwarning': [
             'test/fixtures/missing-doctype.html',
             'test/fixtures/missing-charset.html',
-            'test/fixtures/cols-redundant.html',
+            'test/fixtures/cols-redundant.html'
           ]
         }
       },
       showallerrorswithstop: {
         options: {
           showallerrors: true,
-          stoponwarning: true,
+          stoponwarning: true
         },
         files: {
           'tmp/stoponwarning': [
             'test/fixtures/missing-doctype.html',
             'test/fixtures/missing-charset.html',
-            'test/fixtures/cols-redundant.html',
+            'test/fixtures/cols-redundant.html'
           ]
         }
       },
       stoponboth: {
         options: {
           stoponwarning: true,
-          stoponerror: true,
+          stoponerror: true
         },
         files: {
-          'tmp/stoponboth': [
-            'test/fixtures/**.html',
-          ]
+          'tmp/stoponboth': 'test/fixtures/**.html'
         }
       },
       pass: {
-        options: {},
         files: {
           'tmp/pass': 'test/fixtures/pass.html'
-        },
-      },
+        }
+      }
     },
 
     // Unit tests.
     nodeunit: {
-      tests: ['test/*_test.js']
+      tests: 'test/*_test.js'
     }
 
   });
@@ -133,11 +130,11 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-nodeunit');
 
-  // Whenever the "test" task is run, first clean the "tmp" dir, then run this
-  // plugin's task(s), then test the result.
-  grunt.registerTask('test', ['clean', 'nodeunit']);
+  // Whenever the "test" task is run, first clean the "tmp" dir, then lint,
+  // then test the result.
+  grunt.registerTask('test', ['clean', 'jshint', 'nodeunit']);
 
-  // By default, lint and run all tests.
-  grunt.registerTask('default', ['jshint', 'test']);
+  // By default, run all tests.
+  grunt.registerTask('default', 'test');
 
 };
